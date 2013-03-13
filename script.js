@@ -1,18 +1,10 @@
 var people = [
-    "Kathi Wild",
-    "Daniel Hu Burns",
-    "Anette Hirscher",
-    "Maximilianos Schneiderlein",
-    "Ralph Maurer",
-    "Doris Seeb",
-    "Georg Pfeiffer",
-    "Kevin Schwanzer",
-    "Lisa Pakull",
-    "Joachim Schwarm",
-    "Pia Juliane",
-    "Danny Keck",
-    "Michelle Saskia Greger",
-    "Christopher Mijal"
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f"
 ];
 
 $(document).ready(function() {
@@ -100,7 +92,7 @@ function chooser() {
             var to = '130px';
 
             if(speed > 1000) {
-                $box.html(theChoosenOne);
+                $box.html(returnRandomPeople());
                 to = '60px';
                 end = true;
             } else {
