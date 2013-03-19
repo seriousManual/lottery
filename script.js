@@ -1,121 +1,87 @@
-var people = [
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "f"
-];
+var people = [];
+var $config, $startScreen, $working, $spinner;
 
 $(document).ready(function() {
-    $('button').click(chooser);
+    $config = $('#config');
+    $startScreen = $('#startScreen');
+    $working = $('#working');
+    $spinner = $('#spinner');
+
+    waiting();
+
+    $('#bttnStart').click(function() {
+        people = $('#names').val().split('\n').map(function(val) {
+            return val.trim();
+        }).filter(function(value) {
+            return !!value;
+        });
+
+        $config.hide();
+        $startScreen.show();
+    });
+
+    $('#bttnGo').click(function() {
+        $startScreen.hide();
+        $working.show();
+        setTimeout(function() {
+            $working.hide();
+            $spinner.show();
+
+            chooser();
+        }, 10);
+
+    });
 });
 
-var prev = null;
-
-function returnRandomPeople() {
-    var zug;
-
-    do {
-        zug = people[~~(Math.random()*people.length)];
-    } while(zug === prev);
-
-    prev = zug;
-
-    return zug;
+function returnRandomPeople(list) {
+    return list[~~(Math.random()*list.length)];
 }
 
-function waiting(cb) {
-    var nr = 0;
-    $cont = $('#name');
+function waiting() {
+    var $points = $('#working');
 
-    setTimeout(function() {
-        $cont.html('working');
-    }, 500);
+    var state = 0;
 
-    setTimeout(function() {
-        $cont.html('working..');
-    }, 1000);
+    var states = ['|', '/', '-', '\\'];
 
-    setTimeout(function() {
-        $cont.html('working...');
-    }, 1500);
+    setInterval(function() {
+        state = (++state) % states.length;
 
-    setTimeout(function() {
-        $cont.html('working....');
-    }, 2000);
-
-    setTimeout(function() {
-        $cont.html('working.....');
-    }, 2500);
-
-    setTimeout(function() {
-        $cont.html('working......');
-    }, 3000);
-
-    setTimeout(function() {
-        $cont.html('working.......');
-    }, 3500);
-
-    setTimeout(function() {
-        $cont.html('working........');
-    }, 4000);
-
-    setTimeout(function() {
-        cb();
-    }, 4500);
+        $points.html(states[state]);
+    }, 300)
 }
 
 function chooser() {
-    var $cont = $('#name');
-    $cont.html('');
+    var $box = $('#spinner div');
 
-    var theChoosenOne = returnRandomPeople();
+    var speed = 100;
+    var level = 50;
+    var decayInt = setInterval(function() {
+        speed += level;
+        level = Math.max(5, level - 1);
+    }, 400);
 
-    waiting(function() {
-        $cont.html('');
+    function role() {
+        var end = false;
+        var to = '250px';
 
-        var $box = $('<div></div>').addClass('subBox');
-        $cont.append($box);
-        $box.html(returnRandomPeople());
-
-        var speed = 100;
-        var level = 50;
-        var bla = setInterval(function() {
-            speed += level;
-            level = Math.max(5, level - 1);
-        }, 400);
-
-        function role(cb) {
-            var end = false;
-
-            var to = '130px';
-
-            if(speed > 1000) {
-                $box.html(returnRandomPeople());
-                to = '60px';
-                end = true;
-            } else {
-                $box.html(returnRandomPeople());
-            }
-
-            $box.animate({
-                top: to
-            }, speed, function() {
-                if(end) {
-                    cb();
-                } else {
-                    $box.css({top:'-80px'});
-                    role(cb);
-                }
-            });
+        if(speed > 1000) {
+            to = '80px';
+            end = true;
         }
+        var a = returnRandomPeople(people);
 
-        role(function() {
+        $box.html(a);
 
+        $box.animate({
+            top: to
+        }, speed, function() {
+            if(!end) {
+                $box.css({top:'-250px'});
+                role();
+            }
         });
+    }
 
-    });
-
-
+    role();
 }
