@@ -21,14 +21,16 @@ $(document).ready(function() {
     });
 
     $('#bttnGo').click(function() {
-        $startScreen.hide();
-        $working.show();
+        $startScreen.fadeOut(1000, function() {
+            $working.fadeIn(3000);
+        });
+
         setTimeout(function() {
             $working.hide();
             $spinner.show();
 
             chooser();
-        }, 3000);
+        }, 5000);
     });
 });
 
