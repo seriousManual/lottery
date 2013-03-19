@@ -10,11 +10,13 @@ $(document).ready(function() {
     waiting();
 
     $('#bttnStart').click(function() {
-        people = $('#names').val().split('\n').map(function(val) {
+        var peopleList = $('#names').val().split('\n').map(function(val) {
             return val.trim();
         }).filter(function(value) {
             return !!value;
         });
+
+        people = new ListEval(peopleList, 2);
 
         $config.hide();
         $startScreen.show();
@@ -33,10 +35,6 @@ $(document).ready(function() {
         }, 5000);
     });
 });
-
-function returnRandomPeople(list) {
-    return list[~~(Math.random()*list.length)];
-}
 
 function waiting() {
     var $points = $('#working');
@@ -69,8 +67,9 @@ function chooser() {
         if(speed > 1000) {
             to = '80px';
             end = true;
+            speed = 1500;
         }
-        var a = returnRandomPeople(people);
+        var a = people.get();
 
         $box.html(a);
 
@@ -85,4 +84,30 @@ function chooser() {
     }
 
     role();
+}
+
+function ListEval(list, nr) {
+    this.list = list || [];
+    this.nr = nr || 2;
+    this.lasts = [];
+
+    if(this.list.length <= nr) {
+        this.nr = this.list.length - 1;
+    }
+
+    for(var i = 0; i < this.nr; i++) {
+        this.lasts.push(null);
+    }
+
+    this.get = function() {
+        var tmp;
+        do {
+            tmp = this.list[~~(Math.random() * this.list.length)]
+        } while(this.lasts.indexOf(tmp) > -1);
+
+        this.lasts.pop();
+        this.lasts.unshift(tmp);
+
+        return tmp;
+    };
 }
