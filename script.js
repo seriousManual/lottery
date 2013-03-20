@@ -16,7 +16,7 @@ $(document).ready(function() {
             return !!value;
         });
 
-        people = new ListEval(peopleList, 2);
+        people = new ListEval(peopleList, 4);
 
         $config.hide();
         $startScreen.show();
@@ -91,15 +91,13 @@ function ListEval(list, nr) {
     this.nr = nr || 2;
     this.lasts = [];
 
-    if(this.list.length <= nr) {
-        this.nr = this.list.length - 1;
-    }
-
-    for(var i = 0; i < this.nr; i++) {
-        this.lasts.push(null);
-    }
-
     this.get = function() {
+        if(this.list.length === 1) {
+            return this.length[0];
+        } else if(this.list.length === 0) {
+            return null;
+        }
+
         var tmp;
         do {
             tmp = this.list[~~(Math.random() * this.list.length)]
@@ -110,4 +108,20 @@ function ListEval(list, nr) {
 
         return tmp;
     };
+
+    this.init = function() {
+        if(this.list.length <= 1) {
+            return;
+        }
+
+        if(this.list.length <= nr) {
+            this.nr = this.list.length - 1;
+        }
+
+        for(var i = 0; i < this.nr; i++) {
+            this.lasts.push(null);
+        }
+    };
+
+    this.init();
 }
