@@ -31,7 +31,7 @@ $(document).ready(function() {
             $working.hide();
             $spinner.show();
 
-            chooser();
+            chooser(done);
         }, 5000);
     });
 });
@@ -50,7 +50,7 @@ function waiting() {
     }, 300)
 }
 
-function chooser() {
+function chooser(cb) {
     var $box = $('#spinner div');
 
     var speed = 100;
@@ -79,6 +79,8 @@ function chooser() {
             if(!end) {
                 $box.css({top:'-250px'});
                 role();
+            } else {
+                cb();
             }
         });
     }
@@ -124,4 +126,18 @@ function ListEval(list, nr) {
     };
 
     this.init();
+}
+
+function done() {
+    var $box = $('#spinner div');
+
+    var state = 0;
+
+    var states = ['#f00', '#fff'];
+
+    setInterval(function() {
+        state = (++state) % states.length;
+
+        $box.css('color', states[state]);
+    }, 300)
 }
